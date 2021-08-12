@@ -1,4 +1,4 @@
-@model IEnumerable<MvcMovie.Models.Movie>
+@model IEnumerable<MvcMovie.Models.MovieGenre>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,39 +13,49 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReleaseDate)
+                @Html.DisplayNameFor(model => model.Movie.Title)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Genre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.Movie.ReleaseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movie.Price)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+
+    @{ 
+        var groupedMovieGenres = Model
+            .GroupBy(x => x.Movie);
+    }
+
+@foreach (var group in groupedMovieGenres)
+{
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(modelItem => group.First().Movie.Title)
+            </td>
+            <th>
+                @foreach (var movieGenre in group)
+                {
+                    @:@(movieGenre.Genre.Name + " ")
+                }
+            </th>
+            <td>
+                @Html.DisplayFor(modelItem => group.First().Movie.ReleaseDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ReleaseDate)
+                @Html.DisplayFor(modelItem => group.First().Movie.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Genre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@group.First().Movie.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@group.First().Movie.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@group.First().Movie.Id">Delete</a>
             </td>
         </tr>
 }
