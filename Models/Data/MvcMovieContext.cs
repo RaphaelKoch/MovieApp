@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using MvcMovie.Data;
 using System.Linq;
 using MvcMovie.Models;
+using System.Data;
+
+
 
 namespace MvcMovie.Data
 {
@@ -14,23 +17,34 @@ namespace MvcMovie.Data
         public MvcMovieContext(DbContextOptions<MvcMovieContext> options)
             : base(options)
         {
-            //var result = db.Movie
-            //.Select(r => new GenreInfo
-            //{
-            //    MovieId = r.Id,
-            //    Title = r.Title,
-            //    Genres = r.Genres
-            //        .Select(m => m.Genre.Name)
-            //        .ToList() // <-- to avoid N + 1 subquery in EF Core 2.1+
-            //})
-            //.ToList();
+            
         }
+
         public DbSet<Movie> Movies { get; set; }
-        public DbSet<Genre> Genres { get; set; }
-        public DbSet<MovieGenre> MovieGenres { get; set; }
+        public DbSet<GenreCategory> GenreCategories { get; set; }
+        public DbSet<MovieMapping> MovieMappings { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            //modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
+            modelBuilder.Entity<MovieMapping>()
+                .HasKey(e => new { e.MovieId, e.CategoryId });
+
+            modelBuilder.Entity<MovieMapping>()
+                .HasOne(pt => pt.Movie)
+                .WithMany(p => p.Mappings)
+                .HasForeignKey(pt => pt.MovieId);
+
+            modelBuilder.Entity<MovieMapping>()
+                .HasOne(pt => pt.Category)
+                .WithMany(t => t.Mappings)
+                .HasForeignKey(pt => pt.CategoryId);
+        }
+        
     }
-    
+
+
 }
 

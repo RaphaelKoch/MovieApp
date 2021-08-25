@@ -6,14 +6,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MvcMovie.Models
 {
-    public class MovieGenre
+    public class MovieInfo
     {
-        public long Id { get; set; }
         public int MovieId { get; set; }
-        public int GenreId { get; set; }
-
-        public Movie Movie { get; set; }
-        public Genre Genre { get; set; }
-        
+        public string MovieName { get; set; }
+        public IEnumerable<string> GenreCategories { get; set; }
     }
 }

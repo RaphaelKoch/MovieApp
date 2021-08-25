@@ -16,7 +16,7 @@ namespace MvcMovie.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.8");
 
-            modelBuilder.Entity("MvcMovie.Models.Genre", b =>
+            modelBuilder.Entity("MvcMovie.Models.GenreCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -27,7 +27,7 @@ namespace MvcMovie.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("GenreCategories");
                 });
 
             modelBuilder.Entity("MvcMovie.Models.Movie", b =>
@@ -36,13 +36,13 @@ namespace MvcMovie.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("MovieName")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -50,54 +50,51 @@ namespace MvcMovie.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("MvcMovie.Models.MovieGenre", b =>
+            modelBuilder.Entity("MvcMovie.Models.MovieMapping", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("MovieId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("GenreId");
+                    b.Property<long>("Id")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("MovieId");
+                    b.HasKey("MovieId", "CategoryId");
 
-                    b.ToTable("MovieGenres");
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("MovieMappings");
                 });
 
-            modelBuilder.Entity("MvcMovie.Models.MovieGenre", b =>
+            modelBuilder.Entity("MvcMovie.Models.MovieMapping", b =>
                 {
-                    b.HasOne("MvcMovie.Models.Genre", "Genre")
-                        .WithMany("Genres")
-                        .HasForeignKey("GenreId")
+                    b.HasOne("MvcMovie.Models.GenreCategory", "Category")
+                        .WithMany("Mappings")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MvcMovie.Models.Movie", "Movie")
-                        .WithMany("Genres")
+                        .WithMany("Mappings")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Genre");
+                    b.Navigation("Category");
 
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("MvcMovie.Models.Genre", b =>
+            modelBuilder.Entity("MvcMovie.Models.GenreCategory", b =>
                 {
-                    b.Navigation("Genres");
+                    b.Navigation("Mappings");
                 });
 
             modelBuilder.Entity("MvcMovie.Models.Movie", b =>
                 {
-                    b.Navigation("Genres");
+                    b.Navigation("Mappings");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,61 +1,53 @@
-@model IEnumerable<MvcMovie.Models.MovieGenre>
+@model IEnumerable<MvcMovie.Models.MovieInfo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Movie Index";
 }
 
-<h1>Index</h1>
+<h1>Movie Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create a new Title </a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Movie.Title)
+                Title
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Genre)
+                Genre
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Movie.ReleaseDate)
-            </th>
-            <th>
+            </th>*@
+            @*<th>
                 @Html.DisplayNameFor(model => model.Movie.Price)
             </th>
-            <th></th>
+            <th></th>*@
         </tr>
     </thead>
     <tbody>
 
-    @{ 
-        var groupedMovieGenres = Model
-            .GroupBy(x => x.Movie);
-    }
-
-@foreach (var group in groupedMovieGenres)
+@foreach (var MovieInfo in Model)
 {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => group.First().Movie.Title)
+                @Html.DisplayFor(modelItem => MovieInfo.MovieName)
             </td>
             <th>
-                @foreach (var movieGenre in group)
-                {
-                    @:@(movieGenre.Genre.Name + " ")
-                }
+                @string.Join(", ", MovieInfo.GenreCategories)
             </th>
-            <td>
-                @Html.DisplayFor(modelItem => group.First().Movie.ReleaseDate)
+            @*<td>
+                @Html.DisplayFor(modelItem => movie.Movie.ReleaseDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => group.First().Movie.Price)
-            </td>
+                @Html.DisplayFor(modelItem => movie.Movie.Price)
+            </td>*@
             <td>
-                <a asp-action="Edit" asp-route-id="@group.First().Movie.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@group.First().Movie.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@group.First().Movie.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@MovieInfo.MovieId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@MovieInfo.MovieId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@MovieInfo.MovieId">Delete</a>
             </td>
         </tr>
 }

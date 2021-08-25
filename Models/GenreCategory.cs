@@ -9,11 +9,11 @@ using System.Linq;
 namespace MvcMovie.Models
 
 {
-    public class Genre
+    public class GenreCategory
     {
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<MovieGenre> Genres { get; set; }
+        public ICollection<MovieMapping> Mappings { get; set; }
     }
 }

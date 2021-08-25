@@ -10,13 +10,13 @@ namespace MvcMovie.Models
 {
     public class Movie
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
+        public int Id { get; set; }        
+        public string MovieName { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime ReleaseDate { get; set; }
         public decimal Price { get; set; }
 
-        public ICollection<MovieGenre> Genres { get; set; } // navigation
+        public ICollection<MovieMapping> Mappings { get; set; } // navigation
     }
 }

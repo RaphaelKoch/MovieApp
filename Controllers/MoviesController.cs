@@ -20,13 +20,20 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Movies
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(
-                await _context.MovieGenres
-                    .Include(x => x.Genre)
-                    .Include(x => x.Movie)
-                    .ToListAsync());
+            var result = _context.Movies
+                .Select(r => new MovieInfo
+                {
+                    MovieId = r.Id,
+                    MovieName = r.MovieName,
+                    GenreCategories = r.Mappings
+                        .Select(x => x.Category.Name)
+                        .ToList() // <-- to avoid N + 1 subquery in EF Core 2.1+
+                })
+                .ToList();
+
+            return View(result);
         }
 
         // GET: Movies/Details/5
@@ -38,13 +45,25 @@ namespace MvcMovie.Controllers
             }
 
             var movie = await _context.Movies
+                .Include(x => x.Mappings)
+                .ThenInclude(x => x.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
+            
+            var movieInfo = new MovieInfo()
+            {
+                MovieId = movie.Id,
+                MovieName = movie.MovieName,
+                GenreCategories = movie.Mappings
+                    .Select(x => x.Category.Name)
+                    .ToList(),
+            };
+
+            if (movieInfo == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(movieInfo);
         }
 
         // GET: Movies/Create
@@ -53,12 +72,14 @@ namespace MvcMovie.Controllers
             return View();
         }
 
+        
+
         // POST: Movies/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Price")] Movie movie)
+        public async Task<IActionResult> Create([Bind("Id,Name,GenreCategory")] Movie movie)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +111,7 @@ namespace MvcMovie.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,ReleaseDate,Price")] Movie movie)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,GenreCategory")] Movie movie)
         {
             if (id != movie.Id)
             {
